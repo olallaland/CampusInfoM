@@ -1,0 +1,22 @@
+<div id="search-header">
+  <i nz-icon nzType="search" nzTheme="outline"></i>
+  <span id="divider"> | </span>
+  <span> 搜索 </span>
+</div>
+
+<form nz-form (ngSubmit)="searchActivity()">
+  <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+    <input type="text"
+           nz-input
+           placeholder="输入活动名称、活动地点、主办方等搜索活动"
+           [(ngModel)]="content"
+           name="content"/>
+  </nz-input-group>
+  <ng-template #suffixIconButton>
+    <button nz-button nzType="primary" nzSearch >
+      <i nz-icon nzType="search"></i>
+    </button>
+  </ng-template>
+</form>
+
+

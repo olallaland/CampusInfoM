@@ -1,0 +1,93 @@
+<nz-page-header class="site-page-header"
+                (nzBack)="onBack()"
+                nzBackIcon nzTitle="返回">
+</nz-page-header>
+
+<div class="full-screen new-activity-container">
+
+  <div class="content">
+    <form nz-form [formGroup]="activityInfoForm" (ngSubmit)="create()" ngNativeValidate>
+      <!-- 活动名称 -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzRequired nzFor="activityName"> 活动名称 </nz-form-label>
+        <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="必填项">
+          <input nz-input
+                 formControlName="activityName"
+                 type="text"
+                 id="activityName">
+        </nz-form-control>
+      </nz-form-item >
+
+      <!-- 主办方 -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzFor="host" nzRequired> 主办方 </nz-form-label>
+        <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="必填项">
+          <input nz-input formControlName="host" type="text" id="host">
+        </nz-form-control>
+      </nz-form-item >
+
+      <!-- 活动类型 -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzFor="type" nzRequired> 活动类型 </nz-form-label>
+        <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="必填项">
+          <input nz-input formControlName="type" type="text" id="type">
+        </nz-form-control>
+      </nz-form-item >
+
+      <!-- 活动简介 -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzFor="introduction" nzRequired> 活动简介 </nz-form-label>
+        <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="必填项">
+          <input nz-input formControlName="introduction" type="text" id="introduction">
+        </nz-form-control>
+      </nz-form-item >
+
+      <!-- 活动图片简介 -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzFor="picture" nzRequired> 活动图片简介 </nz-form-label>
+        <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="必填项">
+          <input nz-input formControlName="picture" type="file" id="picture">
+        </nz-form-control>
+      </nz-form-item >
+
+      <!-- 活动地点 -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzFor="venue" nzRequired> 活动地点 </nz-form-label>
+        <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="必填项">
+          <input nz-input formControlName="venue" type="text" id="venue">
+        </nz-form-control>
+      </nz-form-item >
+
+      <!-- 报名人数限制 -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzFor="limit" nzRequired> 报名人数限制 </nz-form-label>
+        <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="必填项">
+          <nz-input-number [nzMin]="1" [nzStep]="1" formControlName="limit" id="limit"></nz-input-number>
+        </nz-form-control>
+      </nz-form-item >
+
+      <!-- 活动时间 -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzFor="activityTime" nzRequired> 活动时间 </nz-form-label>
+        <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="必填项">
+          <nz-range-picker nzShowTime formControlName="activityTime"></nz-range-picker>
+        </nz-form-control>
+      </nz-form-item >
+
+      <!-- 报名时间 -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzFor="signUpTime" nzRequired> 报名时间 </nz-form-label>
+        <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="必填项">
+          <nz-range-picker nzShowTime formControlName="signUpTime"></nz-range-picker>
+        </nz-form-control>
+      </nz-form-item >
+
+      <div class="button-group">
+        <button nz-button nzType="primary"> 确认 </button>
+        <button nz-button type="button" nzType="dashed" (click)="onBack()"> 取消 </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>

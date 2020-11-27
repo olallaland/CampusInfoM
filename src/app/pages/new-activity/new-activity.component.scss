@@ -1,0 +1,23 @@
+.new-activity-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background-color: white;
+
+  .content {
+    padding-top: 50px;
+
+    .body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 100px;
+    }
+  }
+}
+
+.button-group {
+  text-align: center;
+  margin: 50px auto;
+}
+

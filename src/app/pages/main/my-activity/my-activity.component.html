@@ -1,0 +1,139 @@
+<nz-tabset>
+  <!-- 用表格的形式呈现活动列表 -->
+  <nz-tab [nzTitle]="title1">
+    <ng-template #title1>
+      <i nz-icon nzType="table"></i>
+      表格
+    </ng-template>
+
+    <nz-table #nzTable
+              [nzData]="listOfDisplayData"
+              nzTableLayout="fixed"
+              [nzPageSize]="pageSize"
+              [nzPageIndex]="currentPageIndex"
+    >
+      <thead>
+      <tr>
+        <th nzCustomFilter>
+          活动名称
+          <nz-filter-trigger
+            [(nzVisible)]="visible"
+            [nzActive]="searchValue.length > 0"
+            [nzDropdownMenu]="menu"
+          >
+            <i nz-icon nzType="search"></i>
+          </nz-filter-trigger>
+        </th>
+        <th [nzSortFn]='sortIdFn'
+            [nzSortOrder]='null'
+            [nzSortDirections]="['ascend', 'descend', null]"> 活动编号 </th>
+        <th> 活动类型 </th>
+        <th> 活动状态 </th>
+        <th> 活动地点 </th>
+        <th> 开始时间 </th>
+        <th> 结束时间 </th>
+        <th> 人数限制 </th>
+        <th> 报名人数 </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of nzTable.data">
+        <td class='name' (click)="show(data.activityId)">{{ data.activityName }}</td>
+        <td>{{ data.activityId }}</td>
+        <td>{{ data.type }}</td>
+        <td>{{ data.status }}</td>
+        <td>{{ data.activityVenue }}</td>
+        <td>{{ data.startTime }}</td>
+        <td>{{ data.endTime }}</td>
+        <td>{{ data.limit }}</td>
+        <td>{{ data.enrollment }}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+      <div class="ant-table-filter-dropdown">
+        <div class="search-box">
+          <input type="text" nz-input placeholder="搜索活动名称" [(ngModel)]="searchValue" />
+          <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
+            搜索
+          </button>
+          <button nz-button nzSize="small" (click)="reset()"> 清空 </button>
+        </div>
+      </div>
+    </nz-dropdown-menu>
+  </nz-tab>
+
+  <!-- 用日历的形式呈现活动列表 -->
+  <nz-tab [nzTitle]="title2">
+    <ng-template #title2>
+      <i nz-icon nzType="calendar"></i>
+      日历
+    </ng-template>
+
+    <!-- badge tips -->
+    <button class="info-button" nz-button nz-popover nzType="default" [nzPopoverContent]="tip">
+      <i nz-icon nzType="info-circle"></i>
+    </button>
+    <ng-template #tip>
+      <ul>
+        <li>
+          <nz-badge [nzStatus]="'success'" [nzText]="'已结束'"></nz-badge>
+        </li>
+        <li>
+          <nz-badge [nzStatus]="'default'" [nzText]="'未发布'"></nz-badge>
+        </li>
+        <li>
+          <nz-badge [nzStatus]="'cyan'" [nzText]="'报名中'"></nz-badge>
+        </li>
+        <li>
+          <nz-badge [nzStatus]="'processing'" [nzText]="'进行中'"></nz-badge>
+        </li>
+      </ul>
+    </ng-template>
+
+    <nz-calendar>
+      <ul *nzDateCell="let date" class="activity-list" type="none">
+        <div *ngFor="let activity of hostActivityList; index as activityIndex">
+          <div *ngIf="isToday(date, activity)">
+            <li *ngIf="activity.status === '已结束'">
+              <nz-badge [nzStatus]="'success'"
+                        [nzText]='activity.activityName'
+                        (click)="show(activity.activityId)"
+                        class="activity-name"
+                        [title]='activity.activityName'
+              >
+              </nz-badge>
+            </li>
+            <li *ngIf="activity.status === '报名中'">
+              <nz-badge [nzStatus]="'cyan'"
+                        [nzText]='activity.activityName'
+                        (click)="show(activity.activityId)"
+                        class="activity-name"
+                        [title]='activity.activityName'
+              ></nz-badge>
+            </li>
+            <li *ngIf="activity.status === '进行中'">
+              <nz-badge [nzStatus]="'processing'"
+                        [nzText]='activity.activityName'
+                        (click)="show(activity.activityId)"
+                        class="activity-name"
+                        [title]='activity.activityName'
+              ></nz-badge>
+            </li>
+            <li *ngIf="activity.status === '未发布'">
+              <nz-badge [nzStatus]="'default'"
+                        [nzText]='activity.activityName'
+                        (click)="show(activity.activityId)"
+                        class="activity-name"
+                        [title]='activity.activityName'
+              ></nz-badge>
+            </li>
+          </div>
+        </div>
+      </ul>
+    </nz-calendar>
+  </nz-tab>
+
+</nz-tabset>
+
+

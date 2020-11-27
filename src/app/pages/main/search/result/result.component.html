@@ -1,0 +1,27 @@
+<div class="result-container" *ngIf="resultList.length != 0">
+  <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32  }">
+    <div nz-col nzXs="24" nzSm='12' nzMd="12" nzLg="8"
+         *ngFor="let activity of resultList; index as activityIndex">
+      <nz-card
+        [nzCover]="coverTemplate"
+        [nzActions]="[seeDetails]"
+        [nzExtra]="subtitleTemplate">
+        <nz-card-meta nzTitle="{{ activity.activityName }}" nzDescription="{{ activity.introduction }}"></nz-card-meta>
+      </nz-card>
+      <ng-template #seeDetails>
+        <i nz-icon nzType="ellipsis" routerLink="/main/detail/{{activity.activityId}}" title='查看详情'></i>
+      </ng-template>
+      <ng-template #subtitleTemplate>
+        <span id="activity-type"> {{ activity.type }} </span>
+      </ng-template>
+      <ng-template #coverTemplate>
+        <img title="{{ activity.activityName }}" alt="{{ activity.activityName }}" src="{{ activity.picture }}"/>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<!-- 搜索结果为空时的展示 -->
+<div *ngIf="resultList.length == 0">
+  <nz-empty nzNotFoundImage="simple"></nz-empty>
+</div>

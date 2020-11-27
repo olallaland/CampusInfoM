@@ -1,0 +1,94 @@
+<nz-layout class="full-screen">
+  <nz-sider class="menu-sidebar"
+            nzCollapsible
+            nzWidth="256px"
+            nzBreakpoint="md"
+            [(nzCollapsed)]="isCollapsed"
+            [nzTrigger]="null">
+    <!-- title -->
+    <div class="sidebar-logo">
+      <a [routerLink]="['/main']">
+        <i nz-icon nzType="cloud" nzTheme="outline"></i>
+        <h1> 校园信息发布平台 </h1>
+      </a>
+    </div>
+
+    <!-- 活动导航 -->
+    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <!-- 个人主页 -->
+
+        <div class="sidebar-profile">
+          <img src="../../../assets/img/logo.png">
+          <button nz-button
+                  nzType="primary"
+          > 主页 </button>
+        </div>
+
+
+      <li nz-submenu nzOpen nzTitle="首页" nzIcon="home">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="hot" (select)="true"> 热门活动 </a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="search"> 搜索活动 </a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu nzOpen nzTitle="我的活动" nzIcon="user">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/main/myActivity"> 全部 </a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/main/ongoing"> 进行中 </a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/main/signingUp"> 报名中 </a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/main/unreleased"> 未发布 </a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/main/closed"> 已结束 </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <!-- 创建活动 button -->
+    <div class="list-wrapper">
+      <div class="add-list-btn-wrapper">
+        <button nz-button
+                nzGhost
+                nzType="dashed"
+                [routerLink]="['/new']">
+          <i nz-icon nzType="plus" nzTheme="outline"></i>
+          <span *ngIf="!isCollapsed"> 创建活动 </span>
+        </button>
+      </div>
+    </div>
+  </nz-sider>
+
+  <nz-layout>
+    <nz-header>
+      <div class="app-header">
+        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+            <i class="trigger"
+               nz-icon
+               [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+            ></i>
+        </span>
+      </div>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+  </nz-layout>
+
+  <!-- 返回顶部 -->
+  <nz-back-top></nz-back-top>
+
+</nz-layout>

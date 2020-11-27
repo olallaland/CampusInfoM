@@ -1,0 +1,131 @@
+<!-- search box -->
+<div class="search-box">
+  <input type="text" nz-input placeholder="搜索活动名称" [(ngModel)]="searchValue" />
+  <nz-button-group>
+    <button nz-button nzType="primary" (click)="search()">
+      <i nz-icon nzType="search"></i>
+    </button>
+    <button nz-button (click)="reset()">
+      <i nz-icon nzType="reload"></i>
+    </button>
+  </nz-button-group>
+</div>
+
+<nz-descriptions *ngFor="let activity of listOfDisplayData.slice((currentPageIndex - 1) *
+                 pageSize, currentPageIndex * pageSize); index as activityIndex"
+                 nzBordered
+                 [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+  <nz-descriptions-item nzTitle="活动名称"> {{activity.activityName}} </nz-descriptions-item>
+  <nz-descriptions-item nzTitle="活动编号"> {{activity.activityId}} </nz-descriptions-item>
+  <nz-descriptions-item nzTitle="活动类型"> {{activity.type}} </nz-descriptions-item>
+  <nz-descriptions-item nzTitle="活动简介"> {{activity.introduction}} </nz-descriptions-item>
+  <nz-descriptions-item nzTitle="图片介绍"> <img src="{{activity.picture}}"> </nz-descriptions-item>
+  <nz-descriptions-item nzTitle="操作">
+    <nz-button-group>
+      <button nz-button nzType="dashed" routerLink="/main/detail/{{activity.activityId}}"> 查看详情 </button>
+      <button nz-button nzType="primary" (click)="openEditor()"> 编辑活动 </button>
+      <button nz-button nzType="danger" (click)="showDeleteConfirm(activity.activityId)"> 删除活动 </button>
+      <button nz-button nzType="default" (click)="showConfirm(activity.activityId)"> 发布活动 </button>
+    </nz-button-group>
+  </nz-descriptions-item>
+</nz-descriptions>
+
+<!-- 活动列表为空时的展示 -->
+<nz-empty *ngIf="listOfDisplayData.length == 0" nzNotFoundImage="simple"></nz-empty>
+
+<!-- 分页 -->
+<nz-pagination *ngIf="listOfDisplayData.length != 0"
+               [(nzPageIndex)]="currentPageIndex"
+               [nzPageSize]="pageSize"
+               [nzTotal]="total"
+               nzSimple
+               style="text-align: center;"
+></nz-pagination>
+
+<!-- 编辑活动 -->
+<ng-template #drawerTemplate let-data let-drawerRef="drawerRef">
+  <!-- 活动名称 -->
+  <nz-form-item>
+    <nz-form-label [nzSpan]="6" nzRequired nzFor="activityName"> 活动名称 </nz-form-label>
+    <nz-form-control [nzSm]="16" [nzXs]="24">
+      <input nz-input name="activityName" type="text" id="activityName" [(ngModel)]="value">
+    </nz-form-control>
+  </nz-form-item >
+
+    <!-- 主办方 -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="host" nzRequired> 主办方 </nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24">
+        <input nz-input name="host" type="text" id="host">
+      </nz-form-control>
+    </nz-form-item >
+
+    <!-- 活动类型 -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="type" nzRequired> 活动类型 </nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24">
+        <input nz-input name="type" type="text" id="type">
+      </nz-form-control>
+    </nz-form-item >
+
+    <!-- 活动简介 -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="introduction" nzRequired> 活动简介 </nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24">
+        <input nz-input name="introduction" type="text" id="introduction">
+      </nz-form-control>
+    </nz-form-item >
+
+    <!-- 活动图片简介 -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="picture" nzRequired> 活动图片简介 </nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24">
+        <input nz-input
+               name="picture"
+               type="file"
+               id="picture"
+               (change)="preview($event)">
+        <p id="addImageAlert"></p>
+        <img *ngIf="picture != null" src="{{ picture }}" id="imgPreview" style="width: 180px; height: auto"/><br>
+      </nz-form-control>
+    </nz-form-item >
+
+    <!-- 活动地点 -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="venue" nzRequired> 活动地点 </nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24">
+        <input nz-input name="venue" type="text" id="venue">
+      </nz-form-control>
+    </nz-form-item >
+
+    <!-- 报名人数限制 -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="limit" nzRequired> 报名人数限制 </nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24">
+        <nz-input-number [nzMin]="1" [nzStep]="1" id="limit" [(ngModel)]="limit"></nz-input-number>
+      </nz-form-control>
+    </nz-form-item >
+
+    <!-- 活动时间 -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="activityTime" nzRequired> 活动时间 </nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24">
+        <nz-range-picker nzShowTime [(ngModel)]="date"></nz-range-picker>
+      </nz-form-control>
+    </nz-form-item >
+
+    <!-- 报名时间 -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="signUpTime" nzRequired> 报名时间 </nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24">
+        <nz-range-picker nzShowTime [(ngModel)]="date"></nz-range-picker>
+      </nz-form-control>
+    </nz-form-item >
+
+  <div class="button-group">
+    <button nz-button type="submit" nzType="primary"> 确认 </button>
+    <button nz-button type="button" nzType="dashed" (click)="drawerRef.close()"> 取消 </button>
+  </div>
+</ng-template>
+
+
