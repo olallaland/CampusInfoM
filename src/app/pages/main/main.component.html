@@ -18,7 +18,7 @@
       <!-- 个人主页 -->
 
         <div class="sidebar-profile">
-          <img src="../../../assets/img/logo.png">
+          <img src="../../../assets/img/1.jpg">
           <button nz-button
                   nzType="primary"
           > 主页 </button>
@@ -41,16 +41,16 @@
             <a routerLink="/main/myActivity"> 全部 </a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/main/ongoing"> 进行中 </a>
+            <a [routerLink]="['/main/ongoing']"> 进行中 </a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/main/signingUp"> 报名中 </a>
+            <a [routerLink]="['/main/signing']"> 报名中 </a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/main/unreleased"> 未发布 </a>
+            <a [routerLink]="['/main/unreleased']"> 未发布 </a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/main/closed"> 已结束 </a>
+            <a [routerLink]="['/main/closed']"> 已结束 </a>
           </li>
         </ul>
       </li>

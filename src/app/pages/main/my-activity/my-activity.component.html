@@ -26,14 +26,15 @@
         </th>
         <th [nzSortFn]='sortIdFn'
             [nzSortOrder]='null'
-            [nzSortDirections]="['ascend', 'descend', null]"> 活动编号 </th>
-        <th> 活动类型 </th>
-        <th> 活动状态 </th>
-        <th> 活动地点 </th>
-        <th> 开始时间 </th>
-        <th> 结束时间 </th>
-        <th> 人数限制 </th>
-        <th> 报名人数 </th>
+            [nzSortDirections]="['ascend', 'descend', null]"> 活动编号
+        </th>
+        <th> 活动类型</th>
+        <th> 活动状态</th>
+        <th> 活动地点</th>
+        <th> 开始时间</th>
+        <th> 结束时间</th>
+        <th> 人数限制</th>
+        <th> 报名人数</th>
       </tr>
       </thead>
       <tbody>
@@ -53,11 +54,11 @@
     <nz-dropdown-menu #menu="nzDropdownMenu">
       <div class="ant-table-filter-dropdown">
         <div class="search-box">
-          <input type="text" nz-input placeholder="搜索活动名称" [(ngModel)]="searchValue" />
+          <input type="text" nz-input placeholder="搜索活动名称" [(ngModel)]="searchValue"/>
           <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
             搜索
           </button>
-          <button nz-button nzSize="small" (click)="reset()"> 清空 </button>
+          <button nz-button nzSize="small" (click)="reset()"> 清空</button>
         </div>
       </div>
     </nz-dropdown-menu>
@@ -92,9 +93,10 @@
     </ng-template>
 
     <nz-calendar>
+      <!-- 展示每天的活动列表 -->
       <ul *nzDateCell="let date" class="activity-list" type="none">
-        <div *ngFor="let activity of hostActivityList; index as activityIndex">
-          <div *ngIf="isToday(date, activity)">
+        <div *ngFor="let activity of hostActivityList">
+          <div *ngIf="isAtThisDay(date, activity)">
             <li *ngIf="activity.status === '已结束'">
               <nz-badge [nzStatus]="'success'"
                         [nzText]='activity.activityName'
@@ -131,6 +133,48 @@
           </div>
         </div>
       </ul>
+
+      <!-- 按月展示活动列表 -->
+      <ul *nzMonthCell="let month" class="activity-list" type="none">
+        <div *ngFor="let activity of hostActivityList">
+          <div *ngIf="isInThisMonth(month, activity)">
+            <li *ngIf="activity.status === '已结束'">
+              <nz-badge [nzStatus]="'success'"
+                        [nzText]='activity.activityName'
+                        (click)="show(activity.activityId)"
+                        class="activity-name"
+                        [title]='activity.activityName'
+              >
+              </nz-badge>
+            </li>
+            <li *ngIf="activity.status === '报名中'">
+              <nz-badge [nzStatus]="'cyan'"
+                        [nzText]='activity.activityName'
+                        (click)="show(activity.activityId)"
+                        class="activity-name"
+                        [title]='activity.activityName'
+              ></nz-badge>
+            </li>
+            <li *ngIf="activity.status === '进行中'">
+              <nz-badge [nzStatus]="'processing'"
+                        [nzText]='activity.activityName'
+                        (click)="show(activity.activityId)"
+                        class="activity-name"
+                        [title]='activity.activityName'
+              ></nz-badge>
+            </li>
+            <li *ngIf="activity.status === '未发布'">
+              <nz-badge [nzStatus]="'default'"
+                        [nzText]='activity.activityName'
+                        (click)="show(activity.activityId)"
+                        class="activity-name"
+                        [title]='activity.activityName'
+              ></nz-badge>
+            </li>
+          </div>
+        </div>
+      </ul>
+
     </nz-calendar>
   </nz-tab>
 

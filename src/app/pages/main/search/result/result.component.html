@@ -1,7 +1,8 @@
 <div class="result-container" *ngIf="resultList.length != 0">
   <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32  }">
     <div nz-col nzXs="24" nzSm='12' nzMd="12" nzLg="8"
-         *ngFor="let activity of resultList; index as activityIndex">
+         *ngFor="let activity of resultList.slice((currentPageIndex - 1) *
+                 pageSize, currentPageIndex * pageSize); index as activityIndex">
       <nz-card
         [nzCover]="coverTemplate"
         [nzActions]="[seeDetails]"
@@ -19,9 +20,20 @@
       </ng-template>
     </div>
   </div>
+
+  <!-- 分页 -->
+  <nz-pagination *ngIf="resultList.length != 0"
+                 [(nzPageIndex)]="currentPageIndex"
+                 [nzPageSize]="pageSize"
+                 [nzTotal]="total"
+                 nzSimple
+                 style="text-align: center;"
+  ></nz-pagination>
 </div>
 
 <!-- 搜索结果为空时的展示 -->
 <div *ngIf="resultList.length == 0">
   <nz-empty nzNotFoundImage="simple"></nz-empty>
 </div>
+
+

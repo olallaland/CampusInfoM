@@ -9,15 +9,13 @@ import {ResultComponent } from '../result/result.component';
 export class SearchBoxComponent implements OnInit {
 
   content = '';
+  type = '0';
   constructor(private res: ResultComponent) { }
 
   ngOnInit(): void {
   }
 
   searchActivity() {
-    const content = {
-      content: this.content
-    };
-    this.res.getResultList(content);
+    this.res.getResultList(this.content, this.type);
   }
 }

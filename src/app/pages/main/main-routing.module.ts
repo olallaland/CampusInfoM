@@ -3,13 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { MainComponent } from './main.component';
 import {HotComponent} from './hot-activity/hot.component';
 import {MyActivityComponent} from './my-activity/my-activity.component';
-import {UnreleasedActivityComponent} from './unreleased-activity/unreleased-activity.component';
-import {OngoingActivityComponent} from './ongoing-activity/ongoing-activity.component';
-import {SigningUpActivityComponent} from './signing-up-activity/signing-up-activity.component';
-import {ClosedActivityComponent} from './closed-activity/closed-activity.component';
 import {DetailComponent} from './detail/detail.component';
 import {SearchComponent} from './search/search.component';
-
+import {ActivityListComponent} from './activity-list/activity-list.component';
 
 const routes: Routes = [
   {
@@ -33,22 +29,22 @@ const routes: Routes = [
       },
       {
         path: 'unreleased',
-        component: UnreleasedActivityComponent,
+        component: ActivityListComponent,
         pathMatch: 'full'
       },
       {
         path: 'ongoing',
-        component: OngoingActivityComponent,
+        component: ActivityListComponent,
         pathMatch: 'full'
       },
       {
-        path: 'signingUp',
-        component: SigningUpActivityComponent,
+        path: 'signing',
+        component: ActivityListComponent,
         pathMatch: 'full'
       },
       {
         path: 'closed',
-        component: ClosedActivityComponent,
+        component: ActivityListComponent,
         pathMatch: 'full'
       },
       {
@@ -62,7 +58,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [ RouterModule.forChild(routes) ],
+  imports: [ RouterModule.forChild(routes)],
   exports: [ RouterModule ]
 })
 export class MainRoutingModule { }

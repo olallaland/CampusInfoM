@@ -2,6 +2,7 @@
   text-align: center;
   color: #1890ff;
   font-size: 24px;
+  cursor: pointer;
   #divider {
     margin: 0 5px;
     font-size: 30px;
@@ -13,4 +14,8 @@ nz-input-group {
   width: 70%;
   position: relative;
   left: 15%;
+}
+
+.select-type {
+  width: 20%;
 }

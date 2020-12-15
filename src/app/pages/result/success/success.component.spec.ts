@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UnreleasedActivityComponent } from './unreleased-activity.component';
+import { SuccessComponent } from './success.component';
 
-describe('UnreleasedActivityComponent', () => {
-  let component: UnreleasedActivityComponent;
-  let fixture: ComponentFixture<UnreleasedActivityComponent>;
+describe('SuccessComponent', () => {
+  let component: SuccessComponent;
+  let fixture: ComponentFixture<SuccessComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UnreleasedActivityComponent ]
+      declarations: [ SuccessComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UnreleasedActivityComponent);
+    fixture = TestBed.createComponent(SuccessComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

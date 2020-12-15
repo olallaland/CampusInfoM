@@ -54,7 +54,7 @@ registerLocaleData(zh);
     {
       provide: 'BASE_CONFIG',
       // 3.94.89.139 localhost 3.219.247.83 18.212.109.155
-      useValue: 'http://18.212.109.155:8089'
+      useValue: '/api'
     },
     FormBuilder,
     ],

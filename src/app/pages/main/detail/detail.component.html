@@ -1,22 +1,89 @@
 <nz-page-header class="site-page-header"
-                (nzBack)="onBack()"
+                (click)="onBack()"
                 nzBackIcon nzTitle="返回">
 </nz-page-header>
 
-<nz-descriptions *ngFor="let activity of activityInfoList; index as activityIndex"
-                 nzBordered
-                 [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
-  <nz-descriptions-item nzTitle="活动名称"> {{activity.activityName}} </nz-descriptions-item>
-  <nz-descriptions-item nzTitle="活动编号"> {{activity.activityId}} </nz-descriptions-item>
-  <nz-descriptions-item nzTitle="活动类型"> {{activity.type}} </nz-descriptions-item>
-  <nz-descriptions-item nzTitle="活动地点"> {{activity.activityVenue}} </nz-descriptions-item>
-  <nz-descriptions-item nzTitle="活动简介"> {{activity.introduction}} </nz-descriptions-item>
-  <nz-descriptions-item nzTitle="图片介绍"> <img src="{{activity.picture}}"> </nz-descriptions-item>
-  <nz-descriptions-item nzTitle="开始时间"> {{activity.startTime}} </nz-descriptions-item>
-  <nz-descriptions-item nzTitle="结束时间"> {{activity.endTime}} </nz-descriptions-item>
-  <nz-descriptions-item nzTitle="活动状态"> {{activity.status}} </nz-descriptions-item>
-  <nz-descriptions-item nzTitle="人数限制"> {{activity.limit}} </nz-descriptions-item>
-  <nz-descriptions-item nzTitle="报名人数"> {{activity.enrollment}} </nz-descriptions-item>
-  <nz-descriptions-item nzTitle="签到人数"> {{activity.checkIn}} </nz-descriptions-item>
-  <nz-descriptions-item nzTitle="上座率"> {{activity.participateRate}} </nz-descriptions-item>
-</nz-descriptions>
+<nz-tabset>
+  <nz-tab nzTitle="基本信息">
+    <nz-descriptions nzBordered
+                     [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+      <nz-descriptions-item nzTitle="活动名称"> {{activityDetails.activityName}} </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="活动编号"> {{activityDetails.activityId}} </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="活动类型"> {{activityDetails.type}} </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="活动地点"> {{activityDetails.activityVenue}} </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="活动简介"> {{activityDetails.introduction}} </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="图片介绍"> <img src="{{activityDetails.picture}}"> </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="开始时间"> {{activityDetails.startTime}} </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="结束时间"> {{activityDetails.endTime}} </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="活动状态"> {{activityDetails.status}} </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="人数限制"> {{activityDetails.limit}} </nz-descriptions-item>
+    </nz-descriptions>
+  </nz-tab>
+  <nz-tab nzTitle="参加情况">
+    <nz-descriptions nzBordered
+                     [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+      <nz-descriptions-item nzTitle="报名人数"> {{activityDetails.enrollment}} </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="签到人数"> {{activityDetails.checkIn}} </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="上座率"> {{activityDetails.participateRate}} </nz-descriptions-item>
+    </nz-descriptions>
+
+    <nz-table #checkedTable
+              nzTitle="Checked List"
+              [nzData]="activityDetails.checkedList"
+              [nzPageSize]="10"
+              [nzScroll]="{ y: '240px' }">
+      <thead>
+      <tr>
+        <th [nzSortFn]='sortIdFn'
+            [nzSortOrder]='null'
+            [nzSortDirections]="['ascend', 'descend', null]">学工号</th>
+        <th>姓名</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of checkedTable.data">
+        <td>{{ data.userId }}</td>
+        <td>{{ data.username }}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+
+    <nz-table #uncheckedTable
+              nzTitle="Unchecked List"
+              [nzData]="activityDetails.uncheckedList"
+              [nzPageSize]="10"
+              [nzScroll]="{ y: '240px' }">
+      <thead>
+      <tr>
+        <th [nzSortFn]='sortIdFn'
+            [nzSortOrder]='null'
+            [nzSortDirections]="['ascend', 'descend', null]">学工号</th>
+        <th>姓名</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of uncheckedTable.data">
+        <td>{{ data.userId }}</td>
+        <td>{{ data.username }}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+
+  </nz-tab>
+  <nz-tab nzTitle="评论">
+    <nz-list [nzDataSource]="activityDetails.comments" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
+      <ng-template #item let-item>
+        <nz-comment [nzAuthor]="item.username" [nzDatetime]="">
+          <nz-avatar nz-comment-avatar nzIcon="user" [nzSrc]="item.userId"></nz-avatar>
+          <nz-comment-content>
+            <p>{{ item.content }}</p>
+          </nz-comment-content>
+        </nz-comment>
+      </ng-template>
+    </nz-list>
+  </nz-tab>
+</nz-tabset>
+
+
+
+

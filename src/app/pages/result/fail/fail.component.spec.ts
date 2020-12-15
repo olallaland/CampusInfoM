@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OngoingActivityComponent } from './ongoing-activity.component';
+import { FailComponent } from './fail.component';
 
-describe('OngoingActivityComponent', () => {
-  let component: OngoingActivityComponent;
-  let fixture: ComponentFixture<OngoingActivityComponent>;
+describe('FailComponent', () => {
+  let component: FailComponent;
+  let fixture: ComponentFixture<FailComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OngoingActivityComponent ]
+      declarations: [ FailComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OngoingActivityComponent);
+    fixture = TestBed.createComponent(FailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

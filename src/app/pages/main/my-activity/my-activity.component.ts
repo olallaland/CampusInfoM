@@ -47,7 +47,7 @@ export class MyActivityComponent implements OnInit {
     },
     {
       activityName: '面向对象编程',
-      activityId: 12502,
+      activityId: 12503,
       type: '讲座',
       status: '进行中',
       activityVenue: '邯郸校区 GX302',
@@ -98,7 +98,7 @@ export class MyActivityComponent implements OnInit {
 
   // 当前页数
   currentPageIndex = 1;
-  pageSize = 2;
+  pageSize = 5;
   total = 1;
 
   constructor(
@@ -118,7 +118,7 @@ export class MyActivityComponent implements OnInit {
   }
 
   sortIdFn(a, b) {
-    return a.activityId < b.activityId;
+    return a.activityId - b.activityId;
   }
 
   reset(): void {
@@ -131,7 +131,7 @@ export class MyActivityComponent implements OnInit {
     this.listOfDisplayData = this.hostActivityList.filter((item: ActivityItem) => item.activityName.indexOf(this.searchValue) !== -1);
   }
 
-  isToday(date, activity) {
+  isAtThisDay(date, activity) {
     let day = date.getDate();
     if (day < 10) {
       day = '0' + day;
@@ -145,8 +145,17 @@ export class MyActivityComponent implements OnInit {
     return curDate === activityDate;
   }
 
-  show(index) {
-    this.router.navigate(['/main/detail/{{activity.activityId}}']);
+  isInThisMonth(date, activity) {
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    const activityDate = new Date(activity.startTime.split(' ')[0]);
+    const activityMonth = activityDate.getMonth();
+    const activityYear = activityDate.getFullYear();
+    return month === activityMonth && year === activityYear;
+  }
+
+  show(activityId) {
+    this.router.navigate(['/main/detail/' + activityId]);
   }
 
 }

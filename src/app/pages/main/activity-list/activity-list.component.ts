@@ -1,8 +1,9 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {NzDrawerRef, NzDrawerService, NzMessageService, NzModalService} from 'ng-zorro-antd';
+import {NzDrawerRef, NzDrawerService, NzMessageService, NzModalService, NzUploadFile} from 'ng-zorro-antd';
 import {ManageActivityService} from '../../../services/manage-activity/manage-activity.service';
 import {RResponse} from '../../../entities/RResponse';
-import { imagePreview } from '../../../../utils/imagePreview';
+import {ActivatedRoute, Router} from '@angular/router';
+import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 
 interface ActivityItem {
   activityName: string;
@@ -13,18 +14,18 @@ interface ActivityItem {
 }
 
 @Component({
-  selector: 'app-unreleased-activity',
-  templateUrl: './unreleased-activity.component.html',
-  styleUrls: ['./unreleased-activity.component.scss']
+  selector: 'app-activity-list',
+  templateUrl: './activity-list.component.html',
+  styleUrls: ['./activity-list.component.scss']
 })
-export class UnreleasedActivityComponent implements OnInit {
+export class ActivityListComponent implements OnInit {
 
   @ViewChild('drawerTemplate', { static: false }) drawerTemplate?: TemplateRef<{
     $implicit: { value: string };
     drawerRef: NzDrawerRef<string>;
   }>;
 
-  unreleasedActivityList: ActivityItem[] = [
+  activityList: ActivityItem[] = [
     {
       activityName: '心理学讲座',
       activityId: 20125,
@@ -43,32 +44,97 @@ export class UnreleasedActivityComponent implements OnInit {
       picture: '../../assets/intro/2.png'
     }
   ];
-
-  listOfDisplayData = [...this.unreleasedActivityList];
+  listOfDisplayData = [...this.activityList];
 
   searchValue = '';
 
-  value = 'test';
-  picture = '../../assets/intro/2.png';
-  date = [
-    '2020-11-01 20:30',
-    '2020-11-02 20:30'
-  ];
-  limit = 20;
+  picture = '';
+  activityDate: Date[] = [];
+  signUpDate: Date[] = [];
 
   currentPageIndex = 1;
   total = 1;
   pageSize = 1;
+
+  status;
+
+  activityDetail = {
+    activityName: '123',
+    activityId: 12012,
+    host: '17ss',
+    type: '演讲',
+    introduction: 'This is the best ever show. Come on this Sunday, and make sure you won\'t miss it.',
+    picture: '../../assets/intro/5.png',
+    venue: '123',
+    limit: 50,
+    startTime: '2020-12-28 12:00',
+    endTime: '2020-12-29 13:00',
+    signUpStartTime: '2020-12-27 18:00',
+    signUpEndTime: '2020-12-27 18:30',
+  };
+
+  // 活动地点列表
+  venueList = [
+    {venueId: 123, venueName: 'HGX101'},
+    {venueId: 124, venueName: 'HGX102'},
+    {venueId: 125, venueName: 'HGX103'},
+    {venueId: 126, venueName: 'HGX104'},
+  ];
+
+  today = new Date();
+  // 限制活动开始的时间晚于当前时间
+  activityStartDateLimit = (activityStartDate: Date): boolean => {
+    if (!activityStartDate || !this.activityDate) {
+      return differenceInCalendarDays(activityStartDate, this.today) <= 0;
+    }
+
+    return activityStartDate.getTime() < this.today.getTime();
+  }
+
+  // 限制活动报名的时间早于活动开始时间，晚于当前时间
+  signUpStartDateLimit = (signUpStartDate: Date) => {
+    if (!signUpStartDate || !this.signUpDate) {
+      return differenceInCalendarDays(signUpStartDate, this.activityDate[0]) >= 0 ||
+        differenceInCalendarDays(signUpStartDate, this.today) <= 0;
+    }
+    return signUpStartDate.getTime() > this.activityDate[0].getTime() ||
+      differenceInCalendarDays(signUpStartDate, this.today) <= 0;
+  }
 
   constructor(
     private nzMessageService: NzMessageService,
     private manageActivityService: ManageActivityService,
     private modal: NzModalService,
     private drawerService: NzDrawerService,
-  ) { }
+    private routerInfo: ActivatedRoute,
+    private router: Router
+  ) {
+  }
 
   ngOnInit(): void {
+    this.status = this.router.url.split('/')[2];
     this.total = this.listOfDisplayData.length;
+    // this.manageActivityService.searchActivityByStatus(status).subscribe((res: RResponse) => {
+    //   if (res.code === 200) {
+    //     this.activityList = res.data.activityList;
+    //   }
+    // }, (error) => {
+    //   // TODO
+    // });
+
+    // 获取所有的活动地点列表
+    this.manageActivityService.getVenueList().subscribe((res: RResponse) => {
+      if (res.code === 200) {
+        this.venueList = res.data.venueList;
+      } else {
+      }
+    }, (error) => {
+    });
+
+    this.activityDate.push(new Date(this.activityDetail.startTime));
+    this.activityDate.push(new Date(this.activityDetail.endTime));
+    this.signUpDate.push(new Date(this.activityDetail.signUpStartTime));
+    this.signUpDate.push(new Date(this.activityDetail.signUpEndTime));
   }
 
   /**
@@ -83,7 +149,7 @@ export class UnreleasedActivityComponent implements OnInit {
    * 处理搜索结果
    */
   search(): void {
-    this.listOfDisplayData = this.unreleasedActivityList.filter((item: ActivityItem) =>
+    this.listOfDisplayData = this.activityList.filter((item: ActivityItem) =>
       item.activityName.indexOf(this.searchValue) !== -1);
     this.total = this.listOfDisplayData.length;
   }
@@ -152,7 +218,17 @@ export class UnreleasedActivityComponent implements OnInit {
   /**
    * 编辑活动
    */
-  openEditor() {
+  openEditor(activityId) {
+    this.manageActivityService.getHostActivityById(activityId).subscribe((res: RResponse) => {
+      if (res.code === 200) {
+        this.activityDetail = res.data[0];
+      } else {
+        this.fail(res.data.message);
+      }
+    }, (err) => {
+      console.log(err);
+    });
+
     const drawerRef = this.drawerService.create({
       nzTitle: '编辑活动',
       nzContent: this.drawerTemplate,
@@ -193,6 +269,10 @@ export class UnreleasedActivityComponent implements OnInit {
     this.nzMessageService.info(content);
   }
 
+  /**
+   * 加载并预览图片
+   * @parameter event
+   */
   preview(event) {
     this.picture = event.srcElement.files[0]; // 获取图片这里只操作一张图片
     // this.imgSrc = window.URL.createObjectURL(this.picture); // 获取上传的图片临时路径
@@ -205,7 +285,7 @@ export class UnreleasedActivityComponent implements OnInit {
       console.log('file.size = ' + file.size);
       // obj.file = file;
     }
-   // this.user.picture = file;
+    // this.user.picture = file;
 
     // file.size 单位为byte
     const reader = new FileReader();

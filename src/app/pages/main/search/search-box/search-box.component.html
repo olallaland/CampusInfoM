@@ -5,18 +5,28 @@
 </div>
 
 <form nz-form (ngSubmit)="searchActivity()">
-  <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+  <nz-input-group nzSearch [nzAddOnBefore]="addOnBeforeSelect"
+                  [nzAddOnAfter]="suffixIconButton">
     <input type="text"
            nz-input
-           placeholder="输入活动名称、活动地点、主办方等搜索活动"
+           placeholder="输入活动名称或活动地点搜索活动"
            [(ngModel)]="content"
            name="content"/>
   </nz-input-group>
+</form>
+
+<div>
+  <ng-template #addOnBeforeSelect>
+    <nz-select [ngModel]="type">
+      <nz-option nzLabel="活动名称" nzValue="0"></nz-option>
+      <nz-option nzLabel="活动地点" nzValue="1"></nz-option>
+    </nz-select>
+  </ng-template>
+
   <ng-template #suffixIconButton>
     <button nz-button nzType="primary" nzSearch >
       <i nz-icon nzType="search"></i>
     </button>
   </ng-template>
-</form>
-
+</div>
 
