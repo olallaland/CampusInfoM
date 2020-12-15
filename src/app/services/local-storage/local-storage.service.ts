@@ -27,4 +27,12 @@ export class LocalStorageService {
     ls.setItem(key, arr);
   }
 
+  public remove(key: string) {
+    ls.removeItem(key);
+  }
+
+  public clear() {
+    ls.clear();
+  }
+
 }

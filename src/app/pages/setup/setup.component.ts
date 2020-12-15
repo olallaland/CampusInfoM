@@ -49,6 +49,8 @@ export class SetupComponent implements OnInit {
         this.store.set('userId', res.usrId);
         this.store.set('token', res.token);
         this.router.navigate(['/main']);
+      } else {
+        this.createMessage('error', res.message);
       }
       // if (res.code === 200) {
       //   console.log(res);
