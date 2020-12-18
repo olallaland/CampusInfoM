@@ -1,21 +1,37 @@
-<form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="submitForm()">
-  <nz-form-item>
-    <nz-form-control nzErrorTip="Please input your username!">
-      <nz-input-group nzPrefixIcon="user">
-        <input formControlName="username" nz-input placeholder="Username" />
-      </nz-input-group>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-control nzErrorTip="Please input your Password!">
-      <nz-input-group nzPrefixIcon="lock">
-        <input formControlName="password" nz-input type="password" placeholder="Password" />
-      </nz-input-group>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-control>
-      <button nz-button nzType="primary" [disabled]="!validateForm.valid">Log in</button>
-    </nz-form-control>
-  </nz-form-item>
-</form>
+<div class="carousel">
+  <nz-carousel nzAutoPlay>
+    <div nz-carousel-content *ngFor="let index of array">
+      <img style="width: 100%; height: 100%; opacity: 0.8" [src]="bgImgGroup[index]">
+    </div>
+  </nz-carousel>
+  <div nz-row class="full-screen setup-container">
+    <div nz-col [nzSpan]="8"></div>
+    <div nz-col [nzSpan]="8" class="form">
+      <form nz-form [nzLayout]="'vertical'" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Please input your username!">
+            <nz-input-group nzPrefixIcon="user">
+              <input formControlName="username" nz-input placeholder="账号" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Please input your Password!">
+            <nz-input-group nzPrefixIcon="lock">
+              <input formControlName="password" nz-input type="password" placeholder="密码" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button nz-button nzType="primary" [disabled]="!validateForm.valid"> 登录 </button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
+    <div nz-col [nzSpan]="8"></div>
+  </div>
+</div>
+
+
+

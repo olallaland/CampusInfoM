@@ -1,19 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {ManageActivityService} from '../../../services/manage-activity/manage-activity.service';
-import {RResponse} from '../../../entities/RResponse';
+import {ActivityItem} from '../../../entities/ActivityItem';
 import {Router} from '@angular/router';
-
-interface ActivityItem {
-  activityName: string;
-  activityId: number;
-  type: string;
-  status: string;
-  activityVenue: string;
-  startTime: string;
-  endTime: string;
-  limit: number;
-  enrollment: number;
-}
+import {DateTools} from '../../../../utils/dateTools';
 
 @Component({
   selector: 'app-my-activity',
@@ -23,64 +12,69 @@ interface ActivityItem {
 export class MyActivityComponent implements OnInit {
 
   hostActivityList: ActivityItem[] = [
-    {
-      activityName: '心理学讲座之我的人生为什么这么',
-      activityId: 20125,
-      type: '讲座',
-      status: '已结束',
-      activityVenue: '邯郸校区 3102',
-      startTime: '2020-11-12 16:30',
-      endTime: '2020-11-12 17:30',
-      limit: 100,
-      enrollment: 80
-    },
-    {
-      activityName: '星空论坛',
-      activityId: 12502,
-      type: '讲座',
-      status: '已结束',
-      activityVenue: '邯郸校区 GX302',
-      startTime: '2020-11-12 15:30',
-      endTime: '2020-11-12 16:30',
-      limit: 120,
-      enrollment: 99
-    },
-    {
-      activityName: '面向对象编程',
-      activityId: 12503,
-      type: '讲座',
-      status: '进行中',
-      activityVenue: '邯郸校区 GX302',
-      startTime: '2020-11-27 15:30',
-      endTime: '2020-11-27 16:30',
-      limit: 120,
-      enrollment: 99
-    },
-    {
-      activityName: 'Unity基础',
-      activityId: 12502,
-      type: '讲座',
-      status: '报名中',
-      activityVenue: '邯郸校区 GX302',
-      startTime: '2020-11-28 15:30',
-      endTime: '2020-11-28 16:30',
-      limit: 120,
-      enrollment: 99
-    },
+    // {
+    //   activityName: '心理学讲座之我的人生为什么这么',
+    //   activityId: 20125,
+    //   type: '讲座',
+    //   status: '已结束',
+    //   venue: '邯郸校区 3102',
+    //   startTime: '2020-11-12 16:30',
+    //   endTime: '2020-11-12 17:30',
+    //   limit: 100,
+    //   enrollment: 80
+    // },
+    // {
+    //   activityName: '星空论坛',
+    //   activityId: 12502,
+    //   type: '讲座',
+    //   status: '已结束',
+    //   venue: '邯郸校区 GX302',
+    //   startTime: '2020-11-12 15:30',
+    //   endTime: '2020-11-12 16:30',
+    //   limit: 120,
+    //   enrollment: 99
+    // },
+    // {
+    //   activityName: '面向对象编程',
+    //   activityId: 12503,
+    //   type: '讲座',
+    //   status: '进行中',
+    //   venue: '邯郸校区 GX302',
+    //   startTime: '2020-11-27 15:30',
+    //   endTime: '2020-11-27 16:30',
+    //   limit: 120,
+    //   enrollment: 99
+    // },
+    // {
+    //   activityName: 'Unity基础',
+    //   activityId: 12502,
+    //   type: '讲座',
+    //   status: '报名中',
+    //   venue: '邯郸校区 GX302',
+    //   startTime: '2020-11-28 15:30',
+    //   endTime: '2020-11-28 16:30',
+    //   limit: 120,
+    //   enrollment: 99
+    // },
     {
       activityName: '东西方艺术',
       activityId: 12502,
       type: '讲座',
       status: '未发布',
-      activityVenue: '邯郸校区 GX302',
-      startTime: '2020-11-15 15:30',
-      endTime: '2020-11-15 16:30',
+      venue: '邯郸校区 GX302',
+      introduction: 'this is intro',
+      picture: 'ser',
+      activityStartTime: 1605756906000,
+      activityEndTime: 1605756906001,
+      signUpStartTime: 1605756906000,
+      signUpEndTime: 1605756906000,
+      createTime: 1605756905000,
+      launchTime: 1605756906000,
       limit: 120,
       enrollment: 99
     }
   ];
-
-  listOfDisplayData = [...this.hostActivityList];
+  listOfDisplayData;
 
   visible = false;
   searchValue = '';
@@ -103,18 +97,19 @@ export class MyActivityComponent implements OnInit {
 
   constructor(
     private manageActivityService: ManageActivityService,
-    private router: Router
+    private router: Router,
+    public dateTools: DateTools
   ) { }
 
   ngOnInit(): void {
-    // this.manageActivityService.getHostActivityList().subscribe((res: RResponse) => {
-    //   if (res.code === 200) {
-    //     this.hostActivityList = res.data.activities;
-    //   } else {
-    //     // 没有活动，弹出提示？
-    //   }
-    // });
-    this.total = this.hostActivityList.length;
+    this.manageActivityService.getHostActivityList().subscribe((res: any) => {
+      console.log(res);
+      this.hostActivityList = res.activities;
+      this.listOfDisplayData = [...this.hostActivityList];
+      this.total = this.hostActivityList.length;
+    }, (error) => {
+      // TODO createMessage 整合到一个类中
+    });
   }
 
   sortIdFn(a, b) {
@@ -131,27 +126,25 @@ export class MyActivityComponent implements OnInit {
     this.listOfDisplayData = this.hostActivityList.filter((item: ActivityItem) => item.activityName.indexOf(this.searchValue) !== -1);
   }
 
-  isAtThisDay(date, activity) {
-    let day = date.getDate();
-    if (day < 10) {
-      day = '0' + day;
+  /**
+   * 根据活动状态ID获取活动状态
+   * @parameter statusId
+   */
+  getStringStatus(statusId): string {
+    switch (statusId) {
+      case 0:
+        return '未发布';
+      case 1:
+        return '未开始报名';
+      case 2:
+        return '报名中';
+      case 3:
+        return '报名结束';
+      case 4:
+        return '进行中';
+      case 5:
+        return '已结束';
     }
-    let month = date.getMonth() + 1;
-    if (month < 10) {
-      month = '0' + month;
-    }
-    const curDate = date.getFullYear() + '-' + month + '-' + day;
-    const activityDate = activity.startTime.split(' ')[0];
-    return curDate === activityDate;
-  }
-
-  isInThisMonth(date, activity) {
-    const month = date.getMonth();
-    const year = date.getFullYear();
-    const activityDate = new Date(activity.startTime.split(' ')[0]);
-    const activityMonth = activityDate.getMonth();
-    const activityYear = activityDate.getFullYear();
-    return month === activityMonth && year === activityYear;
   }
 
   show(activityId) {

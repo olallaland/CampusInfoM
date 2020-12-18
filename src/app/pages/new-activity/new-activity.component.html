@@ -5,7 +5,10 @@
 
 <div class="full-screen new-activity-container">
   <div class="content">
-    <form nz-form [formGroup]="activityInfoForm" (ngSubmit)="create()" ngNativeValidate>
+    <form nz-form [formGroup]="activityInfoForm"
+          (ngSubmit)="create()"
+          enctype="multipart/form-data"
+          ngNativeValidate>
       <div nz-row>
         <div nz-col [nzXs]="24" [nzSm]="20" [nzMd]="12" [nzLg]="12">
           <!-- 活动名称 -->
@@ -49,15 +52,15 @@
 
           <!-- 活动地点 -->
           <nz-form-item>
-            <nz-form-label [nzSpan]="8" nzFor="venue" nzRequired> 活动地点</nz-form-label>
+            <nz-form-label [nzSpan]="8" nzFor="venueId" nzRequired> 活动地点</nz-form-label>
             <nz-form-control nzErrorTip="必填项">
                 <nz-select nzShowSearch
                            nzAllowClear
                            nzPlaceHolder="选择活动地点"
-                           id="venue"
-                           formControlName="venue">
+                           id="venueId"
+                           formControlName="venueId">
                   <nz-option *ngFor="let venue of venueList"
-                             nzLabel="{{ venue.venueName }}"
+                             nzLabel="{{ venue.campus + ' ' +  venue.venueName }}"
                              nzValue="{{ venue.venueId }}"
                   ></nz-option>
                 </nz-select>

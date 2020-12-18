@@ -27,6 +27,9 @@ import { NewActivityModule } from './pages/new-activity/new-activity.module';
 // services
 import {LocalStorageService} from './services/local-storage/local-storage.service';
 import {ManageActivityService} from './services/manage-activity/manage-activity.service';
+import {SessionStorageService} from './services/session-storage/session-storage.service';
+import {UserService} from './services/user/user.service';
+import {DateTools} from '../utils/dateTools';
 
 
 registerLocaleData(zh);
@@ -53,10 +56,13 @@ registerLocaleData(zh);
   providers: [{ provide: NZ_I18N, useValue: zh_CN }, LocalStorageService, ManageActivityService,
     {
       provide: 'BASE_CONFIG',
-      // 3.94.89.139 localhost 3.219.247.83 18.212.109.155
       useValue: '/api'
     },
-    FormBuilder,
+    {
+      provide: 'IMG_URL',
+      useValue: 'http://175.24.120.91/images/'
+    },
+    FormBuilder, SessionStorageService, UserService, DateTools
     ],
   bootstrap: [AppComponent]
 })

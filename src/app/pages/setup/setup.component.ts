@@ -4,7 +4,8 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../services/user/user.service';
 import {RResponse} from '../../entities/RResponse';
 import {NzMessageService} from 'ng-zorro-antd';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
+import {SessionStorageService} from '../../services/session-storage/session-storage.service';
 
 @Component({
   selector: 'app-setup',
@@ -14,11 +15,17 @@ import {Router} from "@angular/router";
 export class SetupComponent implements OnInit {
 
   validateForm!: FormGroup;
-
-
+  array = [0, 1, 2, 3];
+  bgImgGroup = [
+    '../../../assets/img/faxuelou.jpg',
+    '../../../assets/img/grass.jpg',
+    '../../../assets/img/guanghualou.jpg',
+    '../../../assets/img/xianghuitang.jpg'
+  ];
 
   constructor(
     private store: LocalStorageService,
+    private sessionStorage: SessionStorageService,
     private fb: FormBuilder,
     private userService: UserService,
     private message: NzMessageService,
@@ -27,6 +34,9 @@ export class SetupComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.sessionStorage.get('token') != null) {
+      this.router.navigate(['/main']);
+    }
     this.validateForm = this.fb.group({
       username: [null, [Validators.required]],
       password: [null, [Validators.required]],
@@ -40,25 +50,18 @@ export class SetupComponent implements OnInit {
       this.validateForm.controls[i].updateValueAndValidity();
     }
 
-    this.userService.login(this.validateForm.value).subscribe((res: RResponse) => {
+    this.userService.login(this.validateForm.value).subscribe((res: any) => {
       if (res.message === 'success') {
         this.createMessage('success', '登录成功');
         console.log(res);
-        this.store.set('role', res.role);
-        this.store.set('name', res.displayName);
-        this.store.set('userId', res.usrId);
-        this.store.set('token', res.token);
+        this.sessionStorage.set('role', res.role);
+        this.sessionStorage.set('name', res.displayName);
+        this.sessionStorage.set('userId', res.usrId);
+        this.sessionStorage.set('token', res.token);
         this.router.navigate(['/main']);
       } else {
         this.createMessage('error', res.message);
       }
-      // if (res.code === 200) {
-      //   console.log(res);
-      //   this.createMessage('success', '登录成功');
-      // } else {
-      //   console.log(res);
-      //   this.createMessage('error', res.message);
-      // }
     }, (error) => {
       this.createMessage('error', 'unknown error');
     });

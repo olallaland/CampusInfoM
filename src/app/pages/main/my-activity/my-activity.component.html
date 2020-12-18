@@ -14,6 +14,10 @@
     >
       <thead>
       <tr>
+        <th [nzSortFn]='sortIdFn'
+            [nzSortOrder]='null'
+            [nzSortDirections]="['ascend', 'descend', null]"> 活动编号
+        </th>
         <th nzCustomFilter>
           活动名称
           <nz-filter-trigger
@@ -24,30 +28,28 @@
             <i nz-icon nzType="search"></i>
           </nz-filter-trigger>
         </th>
-        <th [nzSortFn]='sortIdFn'
-            [nzSortOrder]='null'
-            [nzSortDirections]="['ascend', 'descend', null]"> 活动编号
-        </th>
         <th> 活动类型</th>
         <th> 活动状态</th>
         <th> 活动地点</th>
-        <th> 开始时间</th>
-        <th> 结束时间</th>
+        <th> 活动时间</th>
+        <th> 报名时间</th>
         <th> 人数限制</th>
-        <th> 报名人数</th>
+<!--        <th> 报名人数</th>-->
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let data of nzTable.data">
-        <td class='name' (click)="show(data.activityId)">{{ data.activityName }}</td>
         <td>{{ data.activityId }}</td>
+        <td class='name' (click)="show(data.activityId)">{{ data.activityName }}</td>
         <td>{{ data.type }}</td>
-        <td>{{ data.status }}</td>
-        <td>{{ data.activityVenue }}</td>
-        <td>{{ data.startTime }}</td>
-        <td>{{ data.endTime }}</td>
+        <td>{{ getStringStatus(data.status) }}</td>
+        <td>{{ data.venue }}</td>
+        <td>{{ dateTools.numberToDate(data.activityStartTime) + ' 至 '
+        + dateTools.numberToDate(data.activityEndTime)}}</td>
+        <td>{{ dateTools.numberToDate(data.signUpStartTime) + ' 至 '
+        + dateTools.numberToDate(data.signUpEndTime)}}</td>
         <td>{{ data.limit }}</td>
-        <td>{{ data.enrollment }}</td>
+<!--        <td>{{ data.enrollment }}</td>-->
       </tr>
       </tbody>
     </nz-table>
@@ -78,16 +80,22 @@
     <ng-template #tip>
       <ul>
         <li>
-          <nz-badge [nzStatus]="'success'" [nzText]="'已结束'"></nz-badge>
+          <nz-badge [nzStatus]="'orange'" [nzText]="'未发布'"></nz-badge>
         </li>
         <li>
-          <nz-badge [nzStatus]="'default'" [nzText]="'未发布'"></nz-badge>
+          <nz-badge [nzStatus]="'yellow'" [nzText]="'未开始报名'"></nz-badge>
         </li>
         <li>
-          <nz-badge [nzStatus]="'cyan'" [nzText]="'报名中'"></nz-badge>
+          <nz-badge [nzStatus]="'lime'" [nzText]="'报名中'"></nz-badge>
+        </li>
+        <li>
+          <nz-badge [nzStatus]="'purple'" [nzText]="'报名结束'"></nz-badge>
         </li>
         <li>
           <nz-badge [nzStatus]="'processing'" [nzText]="'进行中'"></nz-badge>
+        </li>
+        <li>
+          <nz-badge [nzStatus]="'default'" [nzText]="'活动结束'"></nz-badge>
         </li>
       </ul>
     </ng-template>
@@ -96,25 +104,41 @@
       <!-- 展示每天的活动列表 -->
       <ul *nzDateCell="let date" class="activity-list" type="none">
         <div *ngFor="let activity of hostActivityList">
-          <div *ngIf="isAtThisDay(date, activity)">
-            <li *ngIf="activity.status === '已结束'">
-              <nz-badge [nzStatus]="'success'"
-                        [nzText]='activity.activityName'
-                        (click)="show(activity.activityId)"
-                        class="activity-name"
-                        [title]='activity.activityName'
-              >
-              </nz-badge>
-            </li>
-            <li *ngIf="activity.status === '报名中'">
-              <nz-badge [nzStatus]="'cyan'"
+          <!--*ngIf="isAtThisDay(date, activity)"-->
+          <div *ngIf="dateTools.isAtThisDay(date, activity.activityStartTime)">
+            <li *ngIf="activity.status === 0">
+              <nz-badge [nzStatus]="'orange'"
                         [nzText]='activity.activityName'
                         (click)="show(activity.activityId)"
                         class="activity-name"
                         [title]='activity.activityName'
               ></nz-badge>
             </li>
-            <li *ngIf="activity.status === '进行中'">
+            <li *ngIf="activity.status === 1">
+              <nz-badge [nzStatus]="'yellow'"
+                        [nzText]='activity.activityName'
+                        (click)="show(activity.activityId)"
+                        class="activity-name"
+                        [title]='activity.activityName'
+              ></nz-badge>
+            </li>
+            <li *ngIf="activity.status === 2">
+              <nz-badge [nzStatus]="'lime'"
+                        [nzText]='activity.activityName'
+                        (click)="show(activity.activityId)"
+                        class="activity-name"
+                        [title]='activity.activityName'
+              ></nz-badge>
+            </li>
+            <li *ngIf="activity.status === 3">
+              <nz-badge [nzStatus]="'purple'"
+                        [nzText]='activity.activityName'
+                        (click)="show(activity.activityId)"
+                        class="activity-name"
+                        [title]='activity.activityName'
+              ></nz-badge>
+            </li>
+            <li *ngIf="activity.status === 4">
               <nz-badge [nzStatus]="'processing'"
                         [nzText]='activity.activityName'
                         (click)="show(activity.activityId)"
@@ -122,13 +146,14 @@
                         [title]='activity.activityName'
               ></nz-badge>
             </li>
-            <li *ngIf="activity.status === '未发布'">
+            <li *ngIf="activity.status === 5">
               <nz-badge [nzStatus]="'default'"
                         [nzText]='activity.activityName'
                         (click)="show(activity.activityId)"
                         class="activity-name"
                         [title]='activity.activityName'
-              ></nz-badge>
+              >
+              </nz-badge>
             </li>
           </div>
         </div>
@@ -137,25 +162,40 @@
       <!-- 按月展示活动列表 -->
       <ul *nzMonthCell="let month" class="activity-list" type="none">
         <div *ngFor="let activity of hostActivityList">
-          <div *ngIf="isInThisMonth(month, activity)">
-            <li *ngIf="activity.status === '已结束'">
-              <nz-badge [nzStatus]="'success'"
-                        [nzText]='activity.activityName'
-                        (click)="show(activity.activityId)"
-                        class="activity-name"
-                        [title]='activity.activityName'
-              >
-              </nz-badge>
-            </li>
-            <li *ngIf="activity.status === '报名中'">
-              <nz-badge [nzStatus]="'cyan'"
+          <div *ngIf="dateTools.isInThisMonth(month, activity.activityStartTime)">
+            <li *ngIf="activity.status === 0">
+              <nz-badge [nzStatus]="'orange'"
                         [nzText]='activity.activityName'
                         (click)="show(activity.activityId)"
                         class="activity-name"
                         [title]='activity.activityName'
               ></nz-badge>
             </li>
-            <li *ngIf="activity.status === '进行中'">
+            <li *ngIf="activity.status === 1">
+              <nz-badge [nzStatus]="'yellow'"
+                        [nzText]='activity.activityName'
+                        (click)="show(activity.activityId)"
+                        class="activity-name"
+                        [title]='activity.activityName'
+              ></nz-badge>
+            </li>
+            <li *ngIf="activity.status === 2">
+              <nz-badge [nzStatus]="'lime'"
+                        [nzText]='activity.activityName'
+                        (click)="show(activity.activityId)"
+                        class="activity-name"
+                        [title]='activity.activityName'
+              ></nz-badge>
+            </li>
+            <li *ngIf="activity.status === 3">
+              <nz-badge [nzStatus]="'purple'"
+                        [nzText]='activity.activityName'
+                        (click)="show(activity.activityId)"
+                        class="activity-name"
+                        [title]='activity.activityName'
+              ></nz-badge>
+            </li>
+            <li *ngIf="activity.status === 4">
               <nz-badge [nzStatus]="'processing'"
                         [nzText]='activity.activityName'
                         (click)="show(activity.activityId)"
@@ -163,13 +203,14 @@
                         [title]='activity.activityName'
               ></nz-badge>
             </li>
-            <li *ngIf="activity.status === '未发布'">
+            <li *ngIf="activity.status === 5">
               <nz-badge [nzStatus]="'default'"
                         [nzText]='activity.activityName'
                         (click)="show(activity.activityId)"
                         class="activity-name"
                         [title]='activity.activityName'
-              ></nz-badge>
+              >
+              </nz-badge>
             </li>
           </div>
         </div>

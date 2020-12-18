@@ -77,8 +77,10 @@ export class ResultComponent implements OnInit {
     //   }
     // ];
 
+    console.log(content);
     this.manageActivityService.searchActivity(content, type).subscribe((res: RResponse) => {
-      if (res.code === 200) {
+      console.log(res);
+      if (res.message === 'success') {
         this.resultList = res.data.activityList;
       }
     }, (error) => {

@@ -1,5 +1,39 @@
-form {
-  margin-top: 300px;
+.form {
   position: absolute;
-  left: 35%;
+  float: top;
+  top: 30%;
+  padding: 30px;
+  border-radius: 10px;
+  border: solid 1px;
+  background-color: rgba(255, 255, 250, 0.8);
+}
+
+.setup-container {
+  position: absolute;
+  float: top;
+  top: 30%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 100px;
+  }
+}
+
+.carousel {
+  position: relative;
+  height: 100%;
+  text-align: center;
+  background: white ;
+  color: #fff;
+  overflow: hidden;
+}
+
+h3 {
+  color: #fff;
+  margin-bottom: 0;
 }

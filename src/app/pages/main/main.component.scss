@@ -85,6 +85,10 @@ nz-content {
 
 .sidebar-profile {
   text-align: center;
+  .text-avatar {
+    display: block;
+    margin: 20px auto;
+  }
 }
 
 .sidebar-profile, .list-wrapper > button {

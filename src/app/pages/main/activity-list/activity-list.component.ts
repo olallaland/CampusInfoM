@@ -1,17 +1,11 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {NzDrawerRef, NzDrawerService, NzMessageService, NzModalService, NzUploadFile} from 'ng-zorro-antd';
 import {ManageActivityService} from '../../../services/manage-activity/manage-activity.service';
 import {RResponse} from '../../../entities/RResponse';
 import {ActivatedRoute, Router} from '@angular/router';
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
-
-interface ActivityItem {
-  activityName: string;
-  activityId: number;
-  introduction: string;
-  type: string;
-  picture: string;
-}
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivityItem} from '../../../entities/ActivityItem';
 
 @Component({
   selector: 'app-activity-list',
@@ -20,35 +14,35 @@ interface ActivityItem {
 })
 export class ActivityListComponent implements OnInit {
 
-  @ViewChild('drawerTemplate', { static: false }) drawerTemplate?: TemplateRef<{
+  @ViewChild('drawerTemplate', {static: false}) drawerTemplate?: TemplateRef<{
     $implicit: { value: string };
     drawerRef: NzDrawerRef<string>;
   }>;
 
   activityList: ActivityItem[] = [
     {
-      activityName: '心理学讲座',
-      activityId: 20125,
-      type: '讲座',
-      introduction: '1. 新的革命方法： 群众路线； \n' +
-        '\n 2. 新的革命路线： 农村包围 城市； \n' +
-        '\n 3. 新的指导思想： 马克思主义思想； \n' +
-        '\n 4. 新的领导阶级： 共产党。',
-      picture: '../../assets/intro/1.png'
-    },
-    {
-      activityName: '星空论坛',
-      activityId: 12502,
-      type: '讲座',
-      introduction: '1. 新的革命方法： 群众路线；\n 2. 新的革命路线： 农村包围城市； \n 3. 新的指导思想： 马克思主义思想； \n 4. 新的领导阶级： 共产党。',
-      picture: '../../assets/intro/2.png'
+      activityName: 'xxx',
+      activityId: 0,
+      type: 'xxx',
+      status: 'xxx',
+      venue: 'xxx',
+      introduction: 'xxx',
+      picture: 'default',
+      activityStartTime: Date.now() ,
+      activityEndTime: 1605756906001,
+      signUpStartTime: 1605756906000,
+      signUpEndTime: 1605756906000,
+      createTime: 1605756905000,
+      launchTime: 1605756906000,
+      limit: 120,
+      enrollment: 99
     }
   ];
   listOfDisplayData = [...this.activityList];
 
   searchValue = '';
 
-  picture = '';
+  picture;
   activityDate: Date[] = [];
   signUpDate: Date[] = [];
 
@@ -58,28 +52,29 @@ export class ActivityListComponent implements OnInit {
 
   status;
 
+  activityInfoForm!: FormGroup;
   activityDetail = {
     activityName: '123',
     activityId: 12012,
-    host: '17ss',
     type: '演讲',
     introduction: 'This is the best ever show. Come on this Sunday, and make sure you won\'t miss it.',
     picture: '../../assets/intro/5.png',
-    venue: '123',
+    venue: 'fdaf',
+    venueId: '3',
     limit: 50,
-    startTime: '2020-12-28 12:00',
-    endTime: '2020-12-29 13:00',
+    activityStartTime: '2020-12-28 12:00',
+    activityEndTime: '2020-12-29 13:00',
     signUpStartTime: '2020-12-27 18:00',
     signUpEndTime: '2020-12-27 18:30',
   };
 
   // 活动地点列表
   venueList = [
-    {venueId: 123, venueName: 'HGX101'},
-    {venueId: 124, venueName: 'HGX102'},
-    {venueId: 125, venueName: 'HGX103'},
-    {venueId: 126, venueName: 'HGX104'},
+    {venueId: 3, venueName: 'HGX101', campus: '邯郸校区'},
+    {venueId: 5, venueName: 'HGX104', campus: '邯郸校区'},
   ];
+
+  imgUrl;
 
   today = new Date();
   // 限制活动开始的时间晚于当前时间
@@ -107,34 +102,70 @@ export class ActivityListComponent implements OnInit {
     private modal: NzModalService,
     private drawerService: NzDrawerService,
     private routerInfo: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private formBuilder: FormBuilder,
+    @Inject('IMG_URL') imgURL,
   ) {
+    this.imgUrl = imgURL;
   }
 
   ngOnInit(): void {
     this.status = this.router.url.split('/')[2];
     this.total = this.listOfDisplayData.length;
-    // this.manageActivityService.searchActivityByStatus(status).subscribe((res: RResponse) => {
-    //   if (res.code === 200) {
-    //     this.activityList = res.data.activityList;
-    //   }
-    // }, (error) => {
-    //   // TODO
-    // });
+    this.getActivityByStatus(this.status);
 
     // 获取所有的活动地点列表
-    this.manageActivityService.getVenueList().subscribe((res: RResponse) => {
-      if (res.code === 200) {
-        this.venueList = res.data.venueList;
-      } else {
-      }
+    this.manageActivityService.getVenueList().subscribe((res: any) => {
+      this.venueList = res.venueList;
     }, (error) => {
     });
 
-    this.activityDate.push(new Date(this.activityDetail.startTime));
-    this.activityDate.push(new Date(this.activityDetail.endTime));
+    this.initActivityInfoForm();
+    this.activityDate.push(new Date(this.activityDetail.activityStartTime));
+    this.activityDate.push(new Date(this.activityDetail.activityEndTime));
     this.signUpDate.push(new Date(this.activityDetail.signUpStartTime));
     this.signUpDate.push(new Date(this.activityDetail.signUpEndTime));
+  }
+
+  initActivityInfoForm() {
+    this.activityInfoForm = this.formBuilder.group({
+      activityName: [null, [Validators.required]],
+      type: [null, [Validators.required]],
+      introduction: [null, [Validators.required]],
+      picture: [null],
+      venueId: [null, [Validators.required]],
+      limit: [null, [Validators.required]],
+      activityTime: [[Date.now(), Date.now()], [Validators.required, Validators.required]],
+      signUpTime: [[Date.now(), Date.now()], [Validators.required, Validators.required]],
+      activityStartTime: [this.activityDate[0]],
+      activityEndTime: [this.activityDate[1]],
+      signUpStartTime: [this.signUpDate[0]],
+      signUpEndTime: [this.signUpDate[1]],
+    });
+  }
+
+  /**
+   * 根据活动状态筛选活动
+   * @parameter status
+   */
+  getActivityByStatus(status) {
+    this.manageActivityService.getHostActivityList().subscribe((res: any) => {
+      const allActivities = res.activities;
+      const selectActivities = [];
+
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < allActivities.length; i++) {
+        if (allActivities[i].status.toString() === status) {
+          console.log('yes');
+          selectActivities.push(allActivities[i]);
+        }
+      }
+      this.activityList = selectActivities;
+      this.listOfDisplayData = [...this.activityList];
+      this.total = this.listOfDisplayData.length;
+    }, (err) => {
+      this.fail(err.statusText);
+    });
   }
 
   /**
@@ -189,10 +220,11 @@ export class ActivityListComponent implements OnInit {
    */
   deleteActivity(activityId) {
     this.manageActivityService.deleteActivity(activityId).subscribe((res: RResponse) => {
-      if (res.code === 200) {
+      if (res.message === 'success') {
         this.confirm();
+        setTimeout('window.location.reload()', 1000);
       } else {
-        this.fail(res.data.message);
+        this.fail(res.message);
       }
     }, (err) => {
       this.fail(err.statusText);
@@ -204,11 +236,12 @@ export class ActivityListComponent implements OnInit {
    * @param activityId 活动ID
    */
   releaseActivity(activityId) {
-    this.manageActivityService.deleteActivity(activityId).subscribe((res: RResponse) => {
-      if (res.code === 200) {
+    this.manageActivityService.releaseActivity(activityId).subscribe((res: RResponse) => {
+      if (res.message === 'success') {
         this.confirm();
+        setTimeout('window.location.reload()', 1000);
       } else {
-        this.fail(res.data.message);
+        this.fail(res.message);
       }
     }, (err) => {
       this.fail(err.statusText);
@@ -219,12 +252,10 @@ export class ActivityListComponent implements OnInit {
    * 编辑活动
    */
   openEditor(activityId) {
-    this.manageActivityService.getHostActivityById(activityId).subscribe((res: RResponse) => {
-      if (res.code === 200) {
-        this.activityDetail = res.data[0];
-      } else {
-        this.fail(res.data.message);
-      }
+    this.manageActivityService.getHostActivityById(activityId).subscribe((res: any) => {
+      this.activityDetail = res;
+      this.picture = res.picture;
+      // this.initActivityInfoForm();
     }, (err) => {
       console.log(err);
     });
@@ -233,10 +264,8 @@ export class ActivityListComponent implements OnInit {
       nzTitle: '编辑活动',
       nzContent: this.drawerTemplate,
       nzBodyStyle: {overflow: 'auto'},
-      nzWidth: 500,
-      // nzContentParams: {
-      //   value: this.value
-      // }
+      nzWidth: 580,
+      nzMaskClosable: false
     });
 
     drawerRef.afterOpen.subscribe(() => {
@@ -246,6 +275,49 @@ export class ActivityListComponent implements OnInit {
     drawerRef.afterClose.subscribe(() => {
       console.log('Drawer(Template) close');
     });
+  }
+
+  /**
+   * 提交活动编辑
+   */
+  submitEditing() {
+    // tslint:disable-next-line:forin
+    for (const i in this.activityInfoForm.controls) {
+      this.activityInfoForm.controls[i].markAsDirty();
+      this.activityInfoForm.controls[i].updateValueAndValidity();
+    }
+
+    if (this.activityInfoForm.valid) {
+      if (this.activityInfoForm.value.picture !== null) {
+        const formData = new FormData();
+        formData.append('picture', this.picture);
+        const params = JSON.stringify(this.activityDetail);
+        formData.append('params', new Blob([params], {type: 'application/json'}));
+
+        this.manageActivityService.editActivity(formData).subscribe((res: RResponse) => {
+          if (res.message === 'success') {
+            this.confirm();
+            // setTimeout('window.location.reload()', 1000);
+          } else {
+            this.fail(res.message);
+          }
+        }, (err) => {
+          console.log(err);
+        });
+      } else {
+        console.log(this.activityDetail);
+        this.manageActivityService.editActivityNoPic(this.activityDetail).subscribe((res: RResponse) => {
+          if (res.message === 'success') {
+            this.confirm();
+            // setTimeout('window.location.reload()', 1000);
+          } else {
+            this.fail(res.message);
+          }
+        }, (err) => {
+          console.log(err);
+        });
+      }
+    }
   }
 
   /**
@@ -266,7 +338,7 @@ export class ActivityListComponent implements OnInit {
    * 操作失败
    */
   fail(content) {
-    this.nzMessageService.info(content);
+    this.nzMessageService.create('error', content);
   }
 
   /**

@@ -5,6 +5,9 @@ import differenceInMinutes from 'date-fns/differenceInMinutes';
 import {DisabledTimeFn, NzDatePickerComponent, NzMessageService} from 'ng-zorro-antd';
 import {ManageActivityService} from '../../services/manage-activity/manage-activity.service';
 import {RResponse} from '../../entities/RResponse';
+import {LocalStorageService} from '../../services/local-storage/local-storage.service';
+import {Router} from '@angular/router';
+import {SessionStorageService} from '../../services/session-storage/session-storage.service';
 
 @Component({
   selector: 'app-new-activity',
@@ -19,10 +22,8 @@ export class NewActivityComponent implements OnInit {
   activityDate: Date[] = [];
   signUpDate: Date[] = [];
   venueList = [
-    {venueId: 1, venueName: 'HGX101'},
-    {venueId: 1, venueName: 'HGX102'},
-    {venueId: 1, venueName: 'HGX103'},
-    {venueId: 1, venueName: 'HGX104'},
+    {venueId: 3, venueName: 'HGX101', campus: '邯郸校区'},
+    {venueId: 5, venueName: 'HGX104', campus: '邯郸校区'},
   ];
 
   // 限制活动开始的时间晚于当前时间
@@ -47,18 +48,25 @@ export class NewActivityComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private manageActivityService: ManageActivityService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private router: Router,
+    private sessionStorage: SessionStorageService
   ) {
   }
 
   ngOnInit(): void {
+    if (this.sessionStorage.get('userId') === null) {
+      this.createMessage('warning', '请先登录');
+      this.router.navigate(['/setup']);
+    }
+
     this.activityInfoForm = this.formBuilder.group({
       activityName: [null, [Validators.required]],
       host: [null, [Validators.required]],
       type: [null, [Validators.required]],
       introduction: [null, [Validators.required]],
       picture: [null, [Validators.required]],
-      venue: [null, [Validators.required]],
+      venueId: [null, [Validators.required]],
       limit: [null, [Validators.required]],
       activityTime: [[Date.now(), Date.now()], [Validators.required, Validators.required]],
       signUpTime: [[Date.now(), Date.now()], [Validators.required, Validators.required]],
@@ -69,13 +77,11 @@ export class NewActivityComponent implements OnInit {
     });
 
     // 获取所有的活动地点列表
-    this.manageActivityService.getVenueList().subscribe((res: RResponse) => {
-      if (res.code === 200) {
-        this.venueList = res.data.venueList;
-        console.log(this.venueList);
-      } else {
-      }
+    this.manageActivityService.getVenueList().subscribe((res: any) => {
+      this.venueList = res.venueList;
+      console.log(this.venueList);
     }, (error) => {
+      console.log(error);
     });
   }
 
@@ -94,7 +100,8 @@ export class NewActivityComponent implements OnInit {
     this.activityInfoForm.value.activityEndTime = this.activityDate[1];
     this.activityInfoForm.value.signUpStartTime = this.signUpDate[0];
     this.activityInfoForm.value.signUpEndTime = this.signUpDate[1];
-    this.activityInfoForm.value.picture = this.picture;
+    // this.activityInfoForm.value.remove('picture');
+    // this.activityInfoForm.value.picture = this.picture;
 
     const formData = new FormData();
     formData.append('picture', this.picture);
@@ -107,14 +114,15 @@ export class NewActivityComponent implements OnInit {
       console.log(formData);
 
       this.manageActivityService.createActivity(formData).subscribe((res: RResponse) => {
-        if (res.code === 200) {
+        console.log(res);
+        if (res.message === 'success') {
           this.createMessage('success', '创建成功');
-          setTimeout('history.back()', 2000);
+          setTimeout('history.back()', 1000);
         } else {
-          this.createMessage('error', '创建失败');
+          this.createMessage('error', res.message);
         }
       }, (error) => {
-        this.createMessage('error', '创建失败');
+        this.createMessage('error', error);
       });
     }
   }
@@ -123,6 +131,10 @@ export class NewActivityComponent implements OnInit {
     this.message.create(type, content);
   }
 
+  /**
+   * 本地预览图片
+   * @parameter event
+   */
   preview(event) {
     this.picture = event.srcElement.files[0]; // 获取图片这里只操作一张图片
     // this.imgSrc = window.URL.createObjectURL(this.picture); // 获取上传的图片临时路径

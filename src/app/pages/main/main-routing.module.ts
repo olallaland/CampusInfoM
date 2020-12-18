@@ -12,38 +12,48 @@ const routes: Routes = [
     path: 'main',
     component: MainComponent,
     children: [
-      {
-        path: 'hot',
-        component: HotComponent,
-        pathMatch: 'full'
-      },
-      {
-        path: 'search',
-        component: SearchComponent,
-        pathMatch: 'full'
-      },
+      // {
+      //   path: 'hot',
+      //   component: HotComponent,
+      //   pathMatch: 'full'
+      // },
+      // {
+      //   path: 'search',
+      //   component: SearchComponent,
+      //   pathMatch: 'full'
+      // },
       {
         path: 'myActivity',
         component: MyActivityComponent,
         pathMatch: 'full'
       },
       {
-        path: 'unreleased',
+        path: '0',
         component: ActivityListComponent,
         pathMatch: 'full'
       },
       {
-        path: 'ongoing',
+        path: '1',
         component: ActivityListComponent,
         pathMatch: 'full'
       },
       {
-        path: 'signing',
+        path: '2',
         component: ActivityListComponent,
         pathMatch: 'full'
       },
       {
-        path: 'closed',
+        path: '3',
+        component: ActivityListComponent,
+        pathMatch: 'full'
+      },
+      {
+        path: '4',
+        component: ActivityListComponent,
+        pathMatch: 'full'
+      },
+      {
+        path: '5',
         component: ActivityListComponent,
         pathMatch: 'full'
       },

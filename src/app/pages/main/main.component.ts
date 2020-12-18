@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {LocalStorageService} from "../../services/local-storage/local-storage.service";
-import {Router} from "@angular/router";
+import {LocalStorageService} from '../../services/local-storage/local-storage.service';
+import {Router} from '@angular/router';
+import {NzMessageService} from 'ng-zorro-antd';
+import {SessionStorageService} from '../../services/session-storage/session-storage.service';
 
 @Component({
   selector: 'app-main',
@@ -11,16 +13,24 @@ export class MainComponent implements OnInit {
 
   isCollapsed = false;
   constructor(
-    private store: LocalStorageService,
-    private router: Router
+    public sessionStorage: SessionStorageService,
+    private router: Router,
+    private message: NzMessageService
   ) { }
 
   ngOnInit(): void {
+    if (this.sessionStorage.get('userId') === null) {
+      this.createMessage('warning', '请先登录');
+      this.router.navigate(['/setup']);
+    }
   }
 
   logout() {
-    this.store.clear();
+    this.sessionStorage.clear();
     this.router.navigate(['/setup']);
   }
 
+  createMessage(type: string, content: string): void {
+    this.message.create(type, content);
+  }
 }

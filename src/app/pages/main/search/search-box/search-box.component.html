@@ -4,29 +4,38 @@
   <span> 搜索 </span>
 </div>
 
-<form nz-form (ngSubmit)="searchActivity()">
-  <nz-input-group nzSearch [nzAddOnBefore]="addOnBeforeSelect"
-                  [nzAddOnAfter]="suffixIconButton">
-    <input type="text"
-           nz-input
-           placeholder="输入活动名称或活动地点搜索活动"
-           [(ngModel)]="content"
-           name="content"/>
-  </nz-input-group>
+<form nz-form (ngSubmit)="searchActivity()"
+      [formGroup]="searchForm"
+      enctype="multipart/form-data">
+  <nz-form-item>
+    <nz-form-control>
+      <nz-input-group nzSearch
+                      [nzAddOnBefore]="addOnBeforeSelect"
+                      [nzAddOnAfter]="suffixIconButton">
+        <input type="text"
+               nz-input
+               placeholder="输入活动名称或活动地点搜索活动"
+               formControlName="content"
+               name="content"/>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <div>
+    <ng-template #addOnBeforeSelect>
+      <nz-select formControlName="type">
+        <nz-option nzLabel="活动名称" nzValue="0"></nz-option>
+        <nz-option nzLabel="活动地点" nzValue="1"></nz-option>
+      </nz-select>
+    </ng-template>
+
+    <ng-template #suffixIconButton>
+      <button nz-button nzType="primary" nzSearch >
+        <i nz-icon nzType="search"></i>
+      </button>
+    </ng-template>
+  </div>
 </form>
 
-<div>
-  <ng-template #addOnBeforeSelect>
-    <nz-select [ngModel]="type">
-      <nz-option nzLabel="活动名称" nzValue="0"></nz-option>
-      <nz-option nzLabel="活动地点" nzValue="1"></nz-option>
-    </nz-select>
-  </ng-template>
 
-  <ng-template #suffixIconButton>
-    <button nz-button nzType="primary" nzSearch >
-      <i nz-icon nzType="search"></i>
-    </button>
-  </ng-template>
-</div>
 
