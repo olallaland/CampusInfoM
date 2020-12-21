@@ -3,6 +3,7 @@
     "target": "http://175.24.120.91:8001/",
     "logLevel": "debug",
     "secure": false,
+    "changeOrigin": true,
     "pathRewrite": { "^/api": "" }
   }
 }

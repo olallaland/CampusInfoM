@@ -17,10 +17,10 @@ export class SetupComponent implements OnInit {
   validateForm!: FormGroup;
   array = [0, 1, 2, 3];
   bgImgGroup = [
-    '../../../assets/img/faxuelou.jpg',
-    '../../../assets/img/grass.jpg',
-    '../../../assets/img/guanghualou.jpg',
-    '../../../assets/img/xianghuitang.jpg'
+    './assets/img/faxuelou.jpg',
+    './assets/img/grass.jpg',
+    './assets/img/guanghualou.jpg',
+    './assets/img/xianghuitang.jpg'
   ];
 
   constructor(

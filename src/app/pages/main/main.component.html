@@ -16,41 +16,46 @@
     <!-- 活动导航 -->
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
       <!-- 个人信息 -->
-        <div class="sidebar-profile">
-          <nz-avatar
-            [ngStyle]="{ 'background-color': '#00a2ae' }"
-            [nzText]="sessionStorage.get('name')"
-            nzSize="large"
-            style="vertical-align: middle;"
-            class="text-avatar"
-          ></nz-avatar>
-          <button nz-button
-                  nzType="primary"
-                  (click)="logout()"
-          > 退出 </button>
-        </div>
+      <div class="sidebar-profile">
+        <nz-avatar
+          [ngStyle]="{ 'background-color': '#00a2ae' }"
+          [nzText]="sessionStorage.get('name')[0]"
+          nzSize="large"
+          style="vertical-align: middle;"
+          class="text-avatar"
+        ></nz-avatar>
+        <button nz-button
+                nzType="primary"
+                (click)="logout()"
+        > 退出
+        </button>
+      </div>
 
       <!-- 侧边操作栏 -->
-<!--      <li nz-submenu nzOpen nzTitle="首页" nzIcon="home">-->
-<!--        <ul>-->
-<!--          <li nz-menu-item nzMatchRouter>-->
-<!--            <a routerLink="hot" (select)="true"> 热门活动 </a>-->
-<!--          </li>-->
-<!--          <li nz-menu-item nzMatchRouter>-->
-<!--            <a routerLink="search"> 搜索活动 </a>-->
-<!--          </li>-->
-<!--        </ul>-->
-<!--      </li>-->
+      <!--      <li nz-submenu nzOpen nzTitle="首页" nzIcon="home">-->
+      <!--        <ul>-->
+      <!--          <li nz-menu-item nzMatchRouter>-->
+      <!--            <a routerLink="hot" (select)="true"> 热门活动 </a>-->
+      <!--          </li>-->
+      <!--          <li nz-menu-item nzMatchRouter>-->
+      <!--            <a routerLink="search"> 搜索活动 </a>-->
+      <!--          </li>-->
+      <!--        </ul>-->
+      <!--      </li>-->
       <li nz-submenu nzOpen nzTitle="我的活动" nzIcon="user">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/main/myActivity']"> 全部 </a>
           </li>
+        </ul>
+      </li>
+      <li nz-submenu nzOpen nzTitle="按状态查看" nzIcon="bars">
+        <ul>
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/main/0']"> 未发布 </a>
           </li>
           <li nz-menu-item nzMatchRouter>
-          <a [routerLink]="['/main/1']"> 未开始报名 </a>
+            <a [routerLink]="['/main/1']"> 未开始报名 </a>
           </li>
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/main/2']"> 报名中 </a>

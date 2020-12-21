@@ -105,7 +105,7 @@
       <ul *nzDateCell="let date" class="activity-list" type="none">
         <div *ngFor="let activity of hostActivityList">
           <!--*ngIf="isAtThisDay(date, activity)"-->
-          <div *ngIf="dateTools.isAtThisDay(date, activity.activityStartTime)">
+          <div *ngIf="dateTools.isAtThisDay(date, activity.activityStartTime, activity.activityEndTime)">
             <li *ngIf="activity.status === 0">
               <nz-badge [nzStatus]="'orange'"
                         [nzText]='activity.activityName'
@@ -162,7 +162,7 @@
       <!-- 按月展示活动列表 -->
       <ul *nzMonthCell="let month" class="activity-list" type="none">
         <div *ngFor="let activity of hostActivityList">
-          <div *ngIf="dateTools.isInThisMonth(month, activity.activityStartTime)">
+          <div *ngIf="dateTools.isInThisMonth(month, activity.activityStartTime, activity.activityEndTime)">
             <li *ngIf="activity.status === 0">
               <nz-badge [nzStatus]="'orange'"
                         [nzText]='activity.activityName'

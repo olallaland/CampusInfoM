@@ -41,7 +41,7 @@ export class DetailComponent implements OnInit {
       {username: 'Sam', userId: 17258450012},
       {username: 'Sam', userId: 17258450011}
     ],
-    uncheckedList: [
+    unCheckedList: [
       {username: 'Jimmy', userId: 17248450051}
     ],
     participateRate: 0.95,

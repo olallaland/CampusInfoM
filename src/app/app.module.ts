@@ -16,6 +16,7 @@ import zh from '@angular/common/locales/zh';
 
 import {NgZorroAntdModule} from 'ng-zorro-antd';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 
 // modules
 import { SetupModule } from './pages/setup/setup.module';
@@ -56,11 +57,15 @@ registerLocaleData(zh);
   providers: [{ provide: NZ_I18N, useValue: zh_CN }, LocalStorageService, ManageActivityService,
     {
       provide: 'BASE_CONFIG',
-      useValue: '/api'
+      useValue: '/dist/api'
     },
     {
       provide: 'IMG_URL',
       useValue: 'http://175.24.120.91/images/'
+    },
+    {
+      provide: LocationStrategy,
+      useClass: HashLocationStrategy
     },
     FormBuilder, SessionStorageService, UserService, DateTools
     ],
