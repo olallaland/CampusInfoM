@@ -57,7 +57,7 @@ registerLocaleData(zh);
   providers: [{ provide: NZ_I18N, useValue: zh_CN }, LocalStorageService, ManageActivityService,
     {
       provide: 'BASE_CONFIG',
-      useValue: '/dist/api'
+      useValue: '/api'
     },
     {
       provide: 'IMG_URL',
