@@ -4,6 +4,6 @@
     "logLevel": "debug",
     "secure": false,
     "changeOrigin": true,
-    "pathRewrite": { "^/api": "" }
+    "pathRewrite": { "^/api": "/CampusInfoM" }
   }
 }
