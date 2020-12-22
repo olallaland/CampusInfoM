@@ -5,7 +5,6 @@ import { NewActivityComponent } from './pages/new-activity/new-activity.componen
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/setup' },
-  { path: 'setup', component: SetupComponent },
   { path: 'new', component: NewActivityComponent},
   { path: 'main', pathMatch: 'full', redirectTo: '/main/myActivity' }
 ];
