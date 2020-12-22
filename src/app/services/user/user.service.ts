@@ -22,7 +22,7 @@ export class UserService {
               @Inject('BASE_CONFIG') serviceUrl,
               private sessionStorage: SessionStorageService
   ) {
-    this.serviceUrl = '/api';
+    this.serviceUrl = serviceUrl;
   }
 
   login(validateData) {

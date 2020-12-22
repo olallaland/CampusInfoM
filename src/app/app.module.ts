@@ -63,10 +63,6 @@ registerLocaleData(zh);
       provide: 'IMG_URL',
       useValue: 'http://175.24.120.91/images/'
     },
-    {
-      provide: LocationStrategy,
-      useClass: HashLocationStrategy
-    },
     FormBuilder, SessionStorageService, UserService, DateTools
     ],
   bootstrap: [AppComponent]

@@ -37,6 +37,7 @@ export class SetupComponent implements OnInit {
     if (this.sessionStorage.get('token') != null) {
       this.router.navigate(['/main']);
     }
+    console.log(window.location.href);
     this.validateForm = this.fb.group({
       username: [null, [Validators.required]],
       password: [null, [Validators.required]],
